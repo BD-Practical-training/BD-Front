@@ -5,7 +5,6 @@ import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite';
 import Components from 'unplugin-vue-components/vite';
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
-import ElementPlus from 'unplugin-element-plus/vite';
 
 
 // 修改为箭头函数方便后续添加变量
@@ -22,7 +21,7 @@ export default defineConfig(()=>{
             //设置代理设置
             proxy: {
                 '/api': {  //   若请求的前缀不是这个'/api'，那请求就不会走代理服务器
-                    target: 'http://localhost:8080',  //这里写路径
+                    target: 'http://localhost:8083',  //这里写路径
                     pathRewrite: { '^/api': '' }, //将所有含/api路径的，去掉/api转发给服务器
                     ws: true,  //用于支持websocket
                     changeOrigin: true   //用于控制请求头中的host值
@@ -38,6 +37,19 @@ export default defineConfig(()=>{
             ],
 
         }),
+        AutoImport({
+            resolvers: [ElementPlusResolver()],
+            imports: ['vue', 'vue-router'],
+            dts: './auto-imports.d.ts',
+            eslintrc: {
+                // 已存在文件设置默认 false，需要更新时再打开，防止每次更新都重新生成
+                enabled: false,
+                // 生成文件地址和名称
+                filepath: './.eslintrc-auto-import.json',
+                globalsPropValue: true
+            }
+        }),
+
 
     ],
 }
